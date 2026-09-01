@@ -55,17 +55,14 @@ function draw() {
   ctx.fillStyle = "#000";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // draw snake
   for (let i = 0; i < snake.length; i++) {
     ctx.fillStyle = i === 0 ? "lime" : "green";
     ctx.fillRect(snake[i].x, snake[i].y, box, box);
   }
 
-  // draw food
   ctx.fillStyle = "red";
   ctx.fillRect(food.x, food.y, box, box);
 
-  // current head position
   let headX = snake[0].x;
   let headY = snake[0].y;
 
@@ -74,7 +71,6 @@ function draw() {
   if (direction === "RIGHT") headX += box;
   if (direction === "DOWN") headY += box;
 
-  // check if snake eats food
   if (headX === food.x && headY === food.y) {
     score++;
     food = spawnFood();
@@ -84,7 +80,6 @@ function draw() {
 
   const newHead = { x: headX, y: headY };
 
-  // check collisions (wall or self)
   if (
     headX < 0 || headY < 0 ||
     headX >= canvas.width || headY >= canvas.height ||
