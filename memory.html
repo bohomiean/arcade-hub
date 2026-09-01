@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Memory Game</title>
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f4f4f4;
+    font-family: sans-serif;
+  }
+  #board {
+    display: grid;
+    grid-template-columns: repeat(4, 80px);
+    grid-gap: 10px;
+    margin-top: 20px;
+  }
+  .card {
+    width: 80px;
+    height: 80px;
+    background: #333;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+  .flipped {
+    background: #4caf50;
+  }
+</style>
+</head>
+<body>
+
+<h1>🧠 Memory Game</h1>
+<p id="status">Find all the pairs!</p>
+<div id="board"></div>
+
+<script>
+const symbols = ["🍎", "🍌", "🍇", "🍉", "🍎", "🍌", "🍇", "🍉"];
+let shuffled = symbols.sort(() => 0.5 - Math.random());
+
+const board = document.getElementById("board");
+let firstCard = null;
+let secondCard = null;
+let lockBoard = false;
+let matchesFound = 0;
+
+shuffled.forEach((symbol, index) => {
+  const card = document.createElement("div");
+  card.classList.add("card");
+  card.dataset.symbol = symbol;
+  card.dataset.index = index;
+  card.textContent = "?";
+  card.addEventListener("click", flipCard);
+  board.appendChild(card);
+});
+
+function flipCard() {
+  if (lockBoard || this === firstCard) return;
+
+  this.textContent = this.dataset.symbol;
+  this.classList.add("flipped");
+
+  if (!firstCard) {
+    firstCard = this;
+    return;
+  }
+
+  secondCard = this;
+  lockBoard = true;
+
+  checkForMatch();
+}
+
+function checkForMatch() {
+  const isMatch = firstCard.dataset.symbol === secondCard.dataset.symbol;
+
+  if (isMatch) {
+    matchesFound++;
+    resetTurn();
+    if (matchesFound === symbols.length / 2) {
+      document.getElementById("status").textContent = "🎉 You found all pairs!";
+    }
+  } else {
+    setTimeout(() => {
+      firstCard.textContent = "?";
+      secondCard.textContent = "?";
+      firstCard.classList.remove("flipped");
+      secondCard.classList.remove("flipped");
+      resetTurn();
+    }, 800);
+  }
+}
+
+function resetTurn() {
+  firstCard = null;
+  secondCard = null;
+  lockBoard = false;
+}
+</script>
+
+</body>
+</html>
